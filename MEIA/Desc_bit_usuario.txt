@@ -1,0 +1,5 @@
+Bitacora_usuario|diegojc|12/10/2023 20:59:45|1|1|0
+Bitacora_usuario|diegojc|12/10/2023 21:00:20|1|1|0
+Bitacora_usuario|david|12/10/2023 21:02:20|2|2|0
+Bitacora_usuario|jose|12/10/2023 21:02:42|3|3|0
+Bitacora_usuario|alejandro|12/10/2023 21:03:11|1|1|0
