@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -311,13 +313,14 @@ public class MenuAdmin extends javax.swing.JFrame {
                             .addComponent(jLabel17)
                             .addComponent(txtFechaNac, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(23, 23, 23)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel18)
-                            .addComponent(txtCorreoEl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel4)
                                 .addComponent(txtRutaCarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnBuscarCarpeta)))
+                                .addComponent(btnBuscarCarpeta))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel18)
+                                .addComponent(txtCorreoEl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel15)
@@ -361,6 +364,8 @@ public class MenuAdmin extends javax.swing.JFrame {
 
     
     public void mostrarDatos(String usuario){
+        txtUsuario.setText(usuario);
+        txtRol.setText("Administrador");
         try{
             String filePath = "C:/MEIA/Usuario.txt";
             File file = new File(filePath);
@@ -384,8 +389,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                         }else{
                             rolU = "Administrador";
                         }
-                        txtUsuario.setText(usuario);
-                        txtRol.setText(rolU);
+                        
                         Icon icono = new ImageIcon(getClass().getResource("6590944.png"));
                         //JOptionPane.showMessageDialog(rootPane, "Usuario: "+usuario+"  Rol: "+rolU, "Datos de Ingreso", JOptionPane.PLAIN_MESSAGE, icono);
                     }
@@ -406,8 +410,28 @@ public class MenuAdmin extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         String usuarioABuscar = txtBuscarUsuario.getText();
         String filePath = "C:/MEIA/Usuario.txt";
+        String dir = "C:/MEIA/Usuario.txt";
+        
+        
         try {
             Scanner scanner = new Scanner(new File(filePath));
+            File arch = new File(dir);
+            Scanner sc = new Scanner(arch);
+            String pos = "";
+            while(sc.hasNextLine()){
+                String salto = sc.nextLine();
+                String[] parts = salto.split("\\|");
+                String usAlma = parts[2].trim();
+                if(parts[2].equals(usuarioABuscar)){
+                    pos = parts[1];
+                }
+            }
+            String[] partesPos = pos.split("\\.");
+            String parteEntera = partesPos[0];
+            String fileDir = "C:/MEIA/usuario_bloque"+parteEntera+".txt";
+            File archivo = new File(fileDir);
+            Scanner sca = new Scanner(archivo);
+            
             boolean usuarioEncontrado = false;
             String usuario = "";
             String nombre = "";
@@ -420,8 +444,8 @@ public class MenuAdmin extends javax.swing.JFrame {
             String path = "";
             String estatus = "";
 
-            while (scanner.hasNextLine()) {
-                String linea = scanner.nextLine();
+            while (sca.hasNextLine()) {
+                String linea = sca.nextLine();
                 String[] campos = linea.split("\\|");
 
                 if (campos.length > 0 && campos[0].equals(usuarioABuscar)) {
@@ -450,7 +474,7 @@ public class MenuAdmin extends javax.swing.JFrame {
             txtStatus.setText(estatus);
             
 
-            scanner.close();
+            sca.close();
 
             if (!usuarioEncontrado) {
                 JOptionPane.showMessageDialog(null, "Usuario no encontrado");
@@ -478,6 +502,8 @@ public class MenuAdmin extends javax.swing.JFrame {
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         List<String> lines = new ArrayList<>();
+        List<String> datos = new ArrayList<>();
+        String usuario = txtBuscarUsuario.getText();
         try{
                 String filePath = "C:/MEIA/Usuario.txt";
                 File file = new File(filePath);
@@ -486,8 +512,31 @@ public class MenuAdmin extends javax.swing.JFrame {
                 while (scanner.hasNextLine()) {
                 lines.add(scanner.nextLine());
             }
+                
+        String dir = "C:/MEIA/Usuario.txt";
+        File arch = new File(dir);
+        Scanner sc = new Scanner(arch);
+        String pos = "";
+        while(sc.hasNextLine()){
+            String salto = sc.nextLine();
+            String[] parts = salto.split("\\|");
+            String usAlma = parts[2].trim();
+            if(parts[2].equals(usuario)){
+                pos = parts[1];
+            }
+        }
+        
+        
+        String[] partesPos = pos.split("\\.");
+        String parteEntera = partesPos[0];
+        String fileDir = "C:/MEIA/usuario_bloque"+parteEntera+".txt";
+        File archivo = new File(fileDir);
+        Scanner sca = new Scanner(archivo);
+        while(sca.hasNextLine()){
+            datos.add(sca.nextLine());
+        }
             
-        String usuario = txtBuscarUsuario.getText();
+        
         String nuevoNombre = txtNombre.getText();
         String nuevoApellido = txtApellido.getText();
         String nuevaContra = txtNuevaContra.getText();
@@ -497,8 +546,8 @@ public class MenuAdmin extends javax.swing.JFrame {
         String nuevoTelefono = txtCelular.getText();
         String nuevoPath = txtFoto.getText();
         
-        for(int i = 0; i < lines.size();i++){
-            String[] partes = lines.get(i).split("\\|");
+        for(int i = 0; i < datos.size();i++){
+            String[] partes = datos.get(i).split("\\|");
             if(partes[0].equals(usuario)){
                 partes[1] = nuevoNombre;
                 partes[2] = nuevoApellido;
@@ -508,19 +557,19 @@ public class MenuAdmin extends javax.swing.JFrame {
                 partes[5] = nuevaFecha;
                 partes[7] = nuevoTelefono;
                 partes[8] = nuevoPath;
-                lines.set(i, String.join("|", partes));
+                datos.set(i, String.join("|", partes));
                 break;
             }  
         }
-        try (PrintWriter writer = new PrintWriter(new FileWriter("C:/MEIA/Usuario.txt"))) {
-            for (String line : lines) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("C:/MEIA/usuario_bloque"+parteEntera+".txt"))) {
+            for (String line : datos) {
                 writer.println(line);
             }
         }     catch (IOException e) {
             e.printStackTrace();
         }
         
-        String nombre_simbolico = "Usuario";
+        String nombre_simbolico = "usuario_bloque"+parteEntera;
         String fecha_creacion = "12/10/2023";
         String usuario_creacion = "";
         Date fechaHoraActual = new Date();
@@ -530,7 +579,7 @@ public class MenuAdmin extends javax.swing.JFrame {
         int contadorRegistros = 0;
         int contActivos = 0;
         int contInactivos = 0;
-        String direccione = "C:/MEIA/Usuario.txt";
+        String direccione = "C:/MEIA/usuario_bloque"+parteEntera+".txt";
         File archi = new File(direccione);
         Scanner scanner3 = new Scanner(archi);
         while(scanner3.hasNextLine()) {
@@ -551,9 +600,9 @@ public class MenuAdmin extends javax.swing.JFrame {
                 }
             }
         List<String> lineas = new ArrayList<>();
-        String direccion = "C:/MEIA/Usuario.txt";
-        File arch = new File(direccion);
-        Scanner scanner2 = new Scanner(arch);
+        String direccion = "C:/MEIA/usuario_bloque"+parteEntera+".txt";
+        File archo = new File(direccion);
+        Scanner scanner2 = new Scanner(archo);
         while (scanner2.hasNextLine()) {
             lineas.add(scanner2.nextLine());
         }
@@ -569,10 +618,10 @@ public class MenuAdmin extends javax.swing.JFrame {
             partes[7] = Integer.toString(contInactivos);
             partes[8] = null;
         }
-        try (PrintWriter writer = new PrintWriter(new FileWriter("C:/MEIA/desc_usuario.txt"))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("C:/MEIA/desc_bloque"+parteEntera+"_usuario"+".txt"))) {
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             bufferedWriter.write(nombre_simbolico+"|"+fecha_creacion+"|"+usuario_creacion+"|"+fechaHoraFormateada+"|"+usuario+"|"+contadorRegistros
-                            +"|"+contActivos+"|"+contInactivos);
+                            +"|"+contActivos+"|"+contInactivos+"|"+"3");
             bufferedWriter.newLine();
             bufferedWriter.close();
                             writer.close();
@@ -589,6 +638,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         String usuario = txtBuscarUsuario.getText();
         List<String> lines = new ArrayList<>();
+        List<String> datos = new ArrayList<>();
         try{
                 String filePath = "C:/MEIA/Usuario.txt";
                 File file = new File(filePath);
@@ -597,15 +647,36 @@ public class MenuAdmin extends javax.swing.JFrame {
                 while (scanner.hasNextLine()) {
                 lines.add(scanner.nextLine());
             }
+                String dir = "C:/MEIA/Usuario.txt";
+        File arch = new File(dir);
+        Scanner sc = new Scanner(arch);
+        String pos = "";
+        while(sc.hasNextLine()){
+            String salto = sc.nextLine();
+            String[] parts = salto.split("\\|");
+            String usAlma = parts[2].trim();
+            if(parts[2].equals(usuario)){
+                pos = parts[1];
             }
-        catch(IOException e){
-            e.printStackTrace();
         }
+        
+        
+        String[] partesPos = pos.split("\\.");
+        String parteEntera = partesPos[0];
+        String fileDir = "C:/MEIA/usuario_bloque"+parteEntera+".txt";
+        File archivo = new File(fileDir);
+        Scanner sca = new Scanner(archivo);
+        while(sca.hasNextLine()){
+            datos.add(sca.nextLine());
+        }
+                
+                
+            
         String estatus = "0";
         for(int i = 0; i < lines.size();i++){
             String[] partes = lines.get(i).split("\\|");
-            if(partes[0].equals(usuario)){
-                partes[9] = estatus;
+            if(partes[2].equals(usuario)){
+                partes[4] = estatus;
                 lines.set(i, String.join("|", partes));
                 break;
             }
@@ -617,10 +688,27 @@ public class MenuAdmin extends javax.swing.JFrame {
         }     catch (IOException e) {
             e.printStackTrace();
         }
+        
+        
+        for(int i = 0; i < datos.size();i++){
+            String[] partes = datos.get(i).split("\\|");
+            if(partes[0].equals(usuario)){
+                partes[9] = estatus;
+                datos.set(i, String.join("|", partes));
+                break;
+            }
+        }
+        try (PrintWriter writer = new PrintWriter(new FileWriter("C:/MEIA/usuario_bloque"+parteEntera+".txt"))) {
+            for (String line : datos) {
+                writer.println(line);
+            }
+        }     catch (IOException e) {
+            e.printStackTrace();
+        }
         try{
-            String file1 = "C:/MEIA/Usuario.txt";
-            File arch = new File(file1);
-            Scanner scanner2 = new Scanner(arch);
+            String file1 = "C:/MEIA/usuario_bloque"+parteEntera+".txt";
+            File archo = new File(file1);
+            Scanner scanner2 = new Scanner(archo);
             String fecha_creacion = "12/10/2023";
             String nombre_simbolico = "Usuario";
             Date fechaHoraActual = new Date();
@@ -650,10 +738,22 @@ public class MenuAdmin extends javax.swing.JFrame {
                                 }
                             }
                         try{
-                            FileWriter fileWriter = new FileWriter("C:/MEIA/desc_usuario.txt",true);
+                            FileWriter fileWriter = new FileWriter("C:/MEIA/desc_bloque"+parteEntera+"_usuario"+".txt");
                             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                             bufferedWriter.write(nombre_simbolico+"|"+fecha_creacion+"|"+usuario_creacion+"|"+fechaHoraFormateada+"|"+usuarioModificacion+"|"+contadorRegistros
-                            +"|"+contActivos+"|"+contInactivos);
+                            +"|"+contActivos+"|"+contInactivos+"|"+"3");
+                            bufferedWriter.newLine();
+                            bufferedWriter.close();
+                            fileWriter.close();
+                        }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                        
+                        try{
+                            FileWriter fileWriter = new FileWriter("C:/MEIA/desc_usuario");
+                            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                            bufferedWriter.write("Usuario"+"|"+fecha_creacion+"|"+usuario_creacion+"|"+fechaHoraFormateada+"|"+usuarioModificacion+"|"+contadorRegistros
+                            +"|"+contActivos+"|"+contInactivos+"|"+"2");
                             bufferedWriter.newLine();
                             bufferedWriter.close();
                             fileWriter.close();
@@ -664,11 +764,154 @@ public class MenuAdmin extends javax.swing.JFrame {
             e.printStackTrace();
         }
         
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnOrganizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrganizarActionPerformed
         String filePath = "C:/MEIA/Usuario.txt";
         try{
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+             List<String> lineasFiltradas = new ArrayList<>();
+
+            String linea;
+            boolean cambios = false;
+            String user = "";
+            while ((linea = br.readLine()) != null) {
+                // Divide la línea en campos usando la coma como separador
+                String[] campos = linea.split("\\|");
+                boolean contieneCero = false;
+
+                // Verificar si alguno de los campos contiene "0"
+                for (String campo : campos) {
+                    if (campo.trim().equals("0")) {
+                        user = campos[2];
+                        String pos = campos[0];
+                        String[] partesPos = pos.split("\\.");
+                        String parteEntera = partesPos[0];
+                        String fileDir = "C:/MEIA/usuario_bloque"+parteEntera+".txt";
+                        String temp = "C:/MEIA/usuario_bloque_temp.txt";
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
+                        File archivo = new File(fileDir);
+                        Scanner sca = new Scanner(archivo);
+                        while(sca.hasNextLine()){
+                            String salto = sca.nextLine();
+                            String[] parts = salto.split("\\|");
+                            if(parts[0].equals(user)){
+                                bw.write(salto);
+                                bw.close();
+                                File archivoOriginalFile = new File(fileDir);
+                                File archivoTemporalFile = new File(temp);
+                                archivoTemporalFile.renameTo(archivoOriginalFile);
+                            }
+                        }
+                        contieneCero = true;
+                        break; // Salir del bucle si se encuentra un "0"
+                    }
+                }
+
+                // Si la línea no contiene "0", agrégala a la lista de líneas filtradas
+                if (!contieneCero) {
+                    lineasFiltradas.add(linea);
+                } else {
+                    cambios = true; // Indicar que se realizaron cambios en el archivo
+                }
+            }
+
+            // Cerrar el archivo original
+            br.close();
+            
+            if (cambios) {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(filePath));
+                for (String lineaFiltrada : lineasFiltradas) {
+                    bw.write(lineaFiltrada + "\n");
+                }
+                bw.close();
+                System.out.println("Líneas con valor 0 eliminadas en " + filePath);
+            } else {
+                System.out.println("No se realizaron cambios en " + filePath);
+            }
+           
+                    String archivoEntrada = "C:/MEIA/Usuario.txt";
+                    FileWriter escritorIndice = new FileWriter(archivoEntrada,true);
+                    BufferedWriter escInd = new BufferedWriter(escritorIndice);
+                    
+                    List<String> usuariosList = new ArrayList<>();
+                    BufferedReader brr = new BufferedReader(new FileReader(archivoEntrada));
+                    String lineaT;
+                    while ((lineaT = brr.readLine()) != null) {
+                        String[] partes = lineaT.split("\\|");
+                        String nombreUsuario = partes[2];
+                        usuariosList.add(nombreUsuario);
+                    }
+                    brr.close();
+                    
+                    Collections.sort(usuariosList);
+                    
+                    String archivoGuardar = "C:/MEIA/guardar.txt";
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(archivoGuardar,true));
+                    for(int i = 0; i < usuariosList.size(); i++){
+                        String usuarioActual = usuariosList.get(i);
+                        String siguienteUsuario = (i < usuariosList.size() - 1) ? usuariosList.get(i+1) : "nada";
+                        bw.write(usuarioActual + "|" + siguienteUsuario +"\n");
+                    }
+                    bw.close();
+                    //usuariosList.get(usuariosList.size() - 1).put("siguiente", "0");
+                    
+                    //Agregar los datos de guardado.txt en el archivo principal Usuarios.txt
+                    List<Map<String, String>> lista = new ArrayList<>();
+                    BufferedReader brPrincipal = new BufferedReader(new FileReader(archivoEntrada));
+                    String lineaPrincipal;
+                    while((lineaPrincipal = brPrincipal.readLine()) != null){
+                        String[] partesPrincipal = lineaPrincipal.split("\\|");
+                        Map<String, String> usu = new HashMap<>();
+                        usu.put("registro", partesPrincipal[0]);
+                        usu.put("posicion", partesPrincipal[1]);
+                        usu.put("usuario", partesPrincipal[2]);
+                        usu.put("siguiente", partesPrincipal[3]);
+                        usu.put("estatus", partesPrincipal[4]);
+                        lista.add(usu);
+                    }
+                    brPrincipal.close();
+                    BufferedReader brDocumento = new BufferedReader(new FileReader(archivoGuardar));
+                    String lineaDocumento;
+                    while((lineaDocumento = brDocumento.readLine())!= null){
+                        String[] partesDocumento = lineaDocumento.split("\\|");
+                        String usuarioActualizar = partesDocumento[0];
+                        String siguienteNuevo = partesDocumento[1];
+                        
+                        for(Map<String, String> usu : lista){
+                            if(usu.get("usuario").equals(usuarioActualizar)){
+                                usu.put("siguiente", siguienteNuevo);
+                                break;
+                            }
+                            
+                        }
+                    }
+                    brDocumento.close();
+                    
+                    BufferedWriter ba = new BufferedWriter(new FileWriter(archivoEntrada));
+                    for(Map<String, String> usu: lista){
+                        ba.write(usu.get("registro")+"|"+usu.get("posicion")+"|"+usu.get("usuario")+"|"+usu.get("siguiente")+"|"+usu.get("estatus"));
+                        ba.newLine();
+                    }
+                    ba.close();
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            /*
             BufferedReader reader = new BufferedReader(new FileReader("C:/MEIA/Bitacora_usuario.txt"));
                         StringBuilder data = new StringBuilder();
                         String line;
@@ -682,38 +925,15 @@ public class MenuAdmin extends javax.swing.JFrame {
                         writer.close();
                         FileWriter borrar = new FileWriter("C:/MEIA/Bitacora_usuario.txt",false);
                         borrar.close();
+                        */
         }catch(IOException e){
             e.printStackTrace();
         }
-        // Leer los datos del archivo en una lista
-        List<String> lines = new ArrayList<>();
+        
 
-        try (Scanner scanner = new Scanner(new File(filePath))) {
-            while (scanner.hasNextLine()) {
-                lines.add(scanner.nextLine());
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        
 
-        // Ordenar la lista en función del campo de usuario
-        Collections.sort(lines, new Comparator<String>() {
-            @Override
-            public int compare(String linea1, String linea2) {
-                String usuario1 = linea1.split("\\|")[0];
-                String usuario2 = linea2.split("\\|")[0];
-                return usuario1.compareTo(usuario2);
-            }
-        });
-
-        // Escribir los datos ordenados de vuelta al archivo
-        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
-            for (String line : lines) {
-                writer.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
     }//GEN-LAST:event_btnOrganizarActionPerformed
 
     private void txtRutaCarpetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRutaCarpetaActionPerformed

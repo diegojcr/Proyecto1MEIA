@@ -140,14 +140,11 @@ public class Acceso extends javax.swing.JFrame {
         MenuUsuario menuUsuario = new MenuUsuario();
         MenuAdmin menuAdmin = new MenuAdmin();
         try{
-            String filePath = "C:/MEIA/Usuario.txt";
-            String filePath2 = "C:/MEIA/Bitacora_usuario.txt";
+            String filePath = "C:/MEIA/Proyecto1MEIA/usuarios.txt";
             File file = new File(filePath);
-            File archivo2 = new File(filePath2);
             Scanner scanner = new Scanner(file);
-            Scanner scanner2 = new Scanner(archivo2);
             if(file.exists()){
-                if(file.length()== 0 && archivo2.length() == 0){
+                if(file.length()== 0){
                     JOptionPane.showMessageDialog(null, "No existen usuarios, se creará el primer usuario");
                     //crearUsuario(file);
                     nuevousuario.setVisible(true);
@@ -171,7 +168,6 @@ public class Acceso extends javax.swing.JFrame {
                             menuAdmin.mostrarDatos(usuario);
                             menuAdmin.setVisible(true);
                         }
-                        Icon icono = new ImageIcon(getClass().getResource("6590944.png"));
                         //JOptionPane.showMessageDialog(rootPane, "Usuario: "+usuario+"  Rol: "+rolU, "Datos de Ingreso", JOptionPane.PLAIN_MESSAGE, icono);
                         return true;
                     }

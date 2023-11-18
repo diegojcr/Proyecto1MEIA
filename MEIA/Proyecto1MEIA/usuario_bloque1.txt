@@ -1,0 +1,2 @@
+diegojc|Diego|Cosillo|angel123|1|18/02/2005|diego@correo.com|59647854|C:\Users\Diego\Desktop\ejercicio 11.JPG|1
+usuario_bloque1.txt|31/10/2023|diegojc|diegojc|1|1|0|3

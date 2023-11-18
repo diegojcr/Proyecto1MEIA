@@ -19,7 +19,11 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -109,7 +113,7 @@ public class NuevoUsuario extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel11.setText("Estatus nuevo usuario:");
 
-        txtUsuario.setName("txtUsuario");
+        txtUsuario.setName("txtUsuario"); // NOI18N
 
         txtNombre.setName("txtNombre"); // NOI18N
         txtNombre.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +146,6 @@ public class NuevoUsuario extends javax.swing.JFrame {
         txtEstatus.setEnabled(false);
         txtEstatus.setName("txtEstatus"); // NOI18N
 
-        txtContra.setText("jPasswordField1");
         txtContra.setName("txtContraseña"); // NOI18N
 
         btnRegresar.setText("Regresar al inicio de sesion");
@@ -399,21 +402,19 @@ public class NuevoUsuario extends javax.swing.JFrame {
         }
     }
     
+    int contBloques = 0;
+    
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         try{
             String file1 = "C:/MEIA/Usuario.txt";
-            String filePath = "C:/MEIA/Bitacora_usuario.txt";
-            String filePath2 = "C:/MEIA/Bitacora_usuario.txt";
-            String filePath3 = "C:/MEIA/Bitacora_usuario.txt";
+            String filePath = "C:/MEIA/Usuario.txt";
+            
             File arch1 = new File(file1);
             File archivo = new File(filePath);
-            File archivo2 = new File(filePath2);
-            File archivo3 = new File(filePath3);
-            Scanner scanner = new Scanner(archivo);
-            Scanner scanner2 = new Scanner(archivo2);
-            Scanner scanner3 = new Scanner(archivo3);
-            Scanner scanner4 = new Scanner(arch1);
-            if(arch1.length() == 0 && archivo2.length() == 0){
+            
+            
+            
+            if(arch1.length() == 0){
                 boolean compruebaUser = false;
                 boolean compruebaNombre = false;
                 boolean compruebaApellido = false;
@@ -508,15 +509,35 @@ public class NuevoUsuario extends javax.swing.JFrame {
             Byte estatus = 1;
             JOptionPane.showMessageDialog(null, "El estatus es vigente");
             txtEstatus.setText(Integer.toString(estatus));
+            
+            String nombreArchivo = "";
+            String nameArch = "";
             try{
                 if(compruebaUser == true && compruebaNombre == true && compruebaApellido == true && compruebaContra == true && compruebaFecha == true
                         && compruebaCorreo == true && compruebaPath == true){
-                    FileWriter fileWriter = new FileWriter("C:/MEIA/Bitacora_usuario.txt",true);
+                    contBloques++;
+                    nombreArchivo = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                    nameArch = "C:/MEIA/Proyecto1MEIA/usuarios.txt";
+                    BufferedWriter creador = new BufferedWriter(new FileWriter(nombreArchivo, true));
+                    BufferedWriter datos = new BufferedWriter(new FileWriter(nameArch, true));
+                    creador.write(usuario+"|"+nombre+"|"+apellido+"|"+contraseña+"|"+rol+"|"+fecha_nacimiento+"|"+correo_electronico+"|"+telefono+"|"+path_fotografia+"|"+estatus);
+                    creador.newLine();
+                    creador.close();
+                    datos.write(usuario+"|"+nombre+"|"+apellido+"|"+contraseña+"|"+rol+"|"+fecha_nacimiento+"|"+correo_electronico+"|"+telefono+"|"+path_fotografia+"|"+estatus);
+                    datos.newLine();
+                    datos.close();
+                    
+                    //Llenar el archivo del Usuario indizado
+                    int registro = 1;
+                    double posicion = 1.1;
+                    int siguiente = 0;
+                    FileWriter fileWriter = new FileWriter("C:/MEIA/Usuario.txt",true);
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                    bufferedWriter.write(usuario+"|"+nombre+"|"+apellido+"|"+contraseña+"|"+rol+"|"+fecha_nacimiento+"|"+correo_electronico+"|"+telefono+"|"+path_fotografia+"|"+estatus);
+                    bufferedWriter.write(registro+"|"+posicion+"|"+usuario+"|"+siguiente+"|"+estatus);
                     bufferedWriter.newLine();
                     bufferedWriter.close();
                     fileWriter.close();
+                    
                 }else{
                     JOptionPane.showMessageDialog(null, "Error, verifique sus datos");
                 }
@@ -524,24 +545,33 @@ public class NuevoUsuario extends javax.swing.JFrame {
             }catch (IOException e){
                 e.printStackTrace();
             }
-            String nombre_simbolico = "Bitacora_usuario";
+            String nombre_simbolicoBloque = "usuario_bloque"+contBloques;
+            String nombre_simbolicoUsuario = "Usuario";
             Date fechaHoraActual = new Date();
-            String fecha_creacion = "10/10/2023";
+            String fecha_creacion = "31/10/2023";
             SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
             String fechaHoraFormateada = formato.format(fechaHoraActual);
             String usuario_creacion = usuario;
             int contadorRegistros = 1;
             int contActivos = 1;
             int contInactivos = 0;
-                
+            int max_reorganizacion = 3, bloques = 1, inicio = 1;    
             
                 try{
-                    FileWriter fileWriter = new FileWriter("C:/MEIA/Desc_bit_usuario.txt",true);
+                    String nombreArchivoDesc = "C:/MEIA/desc_bloque"+contBloques+"_usuario"+".txt";
+                    BufferedWriter creador = new BufferedWriter(new FileWriter(nombreArchivoDesc, true));
+                    creador.write(nombre_simbolicoBloque+"|"+fecha_creacion+"|"+usuario_creacion+"|"+fechaHoraFormateada+"|"+usuario+"|"+contadorRegistros+"|"+contActivos+"|"+contInactivos+"|"+max_reorganizacion);
+                    creador.newLine();
+                    creador.close();
+                    
+                    FileWriter fileWriter = new FileWriter("C:/MEIA/desc_usuario.txt",true);
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                    bufferedWriter.write(nombre_simbolico+"|"+usuario+"|"+fechaHoraFormateada+"|"+contadorRegistros+"|"+contActivos+"|"+contInactivos);
+                    bufferedWriter.write(nombre_simbolicoUsuario+"|"+fecha_creacion+"|"+usuario+"|"+fechaHoraFormateada+"|"+usuario+"|"+contadorRegistros+"|"+contActivos+"|"+contInactivos+"|"+bloques
+                    +"|"+inicio);
                     bufferedWriter.newLine();
                     bufferedWriter.close();
                     fileWriter.close();
+                    
                 }catch (IOException e){
                 e.printStackTrace();
             }
@@ -551,6 +581,14 @@ public class NuevoUsuario extends javax.swing.JFrame {
         //En caso ya existan usuarios dentro del archivo
         
         }else{
+                String filePath5 = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                File archivo5 = new File(filePath5);
+                Scanner scanner2 = new Scanner(archivo5);
+                
+                
+                String filePath1 = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                File archivo1 = new File(filePath1);
+                Scanner scanner = new Scanner(archivo1);
                 boolean compruebaUser = false;
                 boolean compruebaNombre = false;
                 boolean compruebaApellido = false;
@@ -624,9 +662,7 @@ public class NuevoUsuario extends javax.swing.JFrame {
                         }else{
                             rolU = "Administrador";
                         }
-                        Icon icono = new ImageIcon(getClass().getResource("6590944.png"));
-                        //JOptionPane.showMessageDialog(rootPane, "Usuario: "+usuario+"  Rol: "+rolU, "Datos de Ingreso", JOptionPane.PLAIN_MESSAGE, icono);
-                    }
+                       }
                     
                   }
                 txtRol.setText(Integer.toString(rol));
@@ -666,16 +702,120 @@ public class NuevoUsuario extends javax.swing.JFrame {
             Byte estatus = 1;
             JOptionPane.showMessageDialog(null, "El estatus es vigente");
             txtEstatus.setText(Integer.toString(estatus));
+            
+            //Ingreso de datos al bloque
+            
+            String nombreArchivo = "";
             try{
                 if(compruebaUser == true && compruebaNombre == true && compruebaApellido == true && compruebaContra == true && compruebaFecha == true
                         && compruebaCorreo == true && compruebaPath == true){
-                    int contRegistrosBitacora = 0;
+                    int contRegistrosBloque = 0;
                     while(scanner2.hasNextLine()){
-                        contRegistrosBitacora++;
+                        contRegistrosBloque++;
                         scanner2.nextLine();
                     }
-                    if(contRegistrosBitacora == 3){
-                        JOptionPane.showMessageDialog(null, "La Bitacora está llena, se moverán los datos a Usuario");
+                    if(contRegistrosBloque >= 3){
+                        JOptionPane.showMessageDialog(null, "Este bloque se encuentra lleno, se creará uno nuevo");
+                        contBloques++;
+                        nombreArchivo = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                        BufferedWriter creador = new BufferedWriter(new FileWriter(nombreArchivo, true));
+                        creador.write(usuario+"|"+nombre+"|"+apellido+"|"+contraseña+"|"+rol+"|"+fecha_nacimiento+"|"+correo_electronico+"|"+telefono+"|"+path_fotografia+"|"+estatus);
+                        creador.newLine();
+                        creador.close();
+                        
+                        String dirUs = "C:/MEIA/Usuario.txt";
+                    File arch = new File(dirUs);
+                    Scanner sc = new Scanner(arch);
+                    String dirBloq = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                    File archBloq = new File(dirBloq);
+                    Scanner scBloq = new Scanner(archBloq);
+                    int contRegistrosBloq = 0;
+                    while(scBloq.hasNextLine()){
+                        contRegistrosBloq++;
+                        scBloq.nextLine();
+                    }
+                    
+                    int registro = 0, contRegistrosUsuario = 0;
+                    while(sc.hasNextLine()){
+                        contRegistrosUsuario++;
+                        registro = contRegistrosUsuario + 1;
+                        sc.nextLine();
+                    }
+                    
+                    String posicion = contBloques+"."+contRegistrosBloq;
+                    
+                    String archivoEntrada = "C:/MEIA/Usuario.txt";
+                    FileWriter escritorIndice = new FileWriter(archivoEntrada,true);
+                    BufferedWriter escInd = new BufferedWriter(escritorIndice);
+                    
+                    escInd.write(registro+"|"+posicion+"|"+usuario+"|"+0+"|"+estatus);
+                    escInd.newLine();
+                    escInd.close();
+                    escritorIndice.close();
+                    List<String> usuariosList = new ArrayList<>();
+                    BufferedReader br = new BufferedReader(new FileReader(archivoEntrada));
+                    String linea;
+                    while ((linea = br.readLine()) != null) {
+                        String[] partes = linea.split("\\|");
+                        String nombreUsuario = partes[2];
+                        usuariosList.add(nombreUsuario);
+                    }
+                    br.close();
+                    
+                    Collections.sort(usuariosList);
+                    
+                    String archivoGuardar = "C:/MEIA/guardar.txt";
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(archivoGuardar,true));
+                    for(int i = 0; i < usuariosList.size(); i++){
+                        String usuarioActual = usuariosList.get(i);
+                        String siguienteUsuario = (i < usuariosList.size() - 1) ? usuariosList.get(i+1) : "nada";
+                        bw.write(usuarioActual + "|" + siguienteUsuario +"\n");
+                    }
+                    bw.close();
+                    //usuariosList.get(usuariosList.size() - 1).put("siguiente", "0");
+                    
+                    //Agregar los datos de guardado.txt en el archivo principal Usuarios.txt
+                    List<Map<String, String>> lista = new ArrayList<>();
+                    BufferedReader brPrincipal = new BufferedReader(new FileReader(archivoEntrada));
+                    String lineaPrincipal;
+                    while((lineaPrincipal = brPrincipal.readLine()) != null){
+                        String[] partesPrincipal = lineaPrincipal.split("\\|");
+                        Map<String, String> usu = new HashMap<>();
+                        usu.put("registro", partesPrincipal[0]);
+                        usu.put("posicion", partesPrincipal[1]);
+                        usu.put("usuario", partesPrincipal[2]);
+                        usu.put("siguiente", partesPrincipal[3]);
+                        usu.put("estatus", partesPrincipal[4]);
+                        lista.add(usu);
+                    }
+                    brPrincipal.close();
+                    BufferedReader brDocumento = new BufferedReader(new FileReader(archivoGuardar));
+                    String lineaDocumento;
+                    while((lineaDocumento = brDocumento.readLine())!= null){
+                        String[] partesDocumento = lineaDocumento.split("\\|");
+                        String usuarioActualizar = partesDocumento[0];
+                        String siguienteNuevo = partesDocumento[1];
+                        
+                        for(Map<String, String> usu : lista){
+                            if(usu.get("usuario").equals(usuarioActualizar)){
+                                usu.put("siguiente", siguienteNuevo);
+                                break;
+                            }
+                            
+                        }
+                    }
+                    brDocumento.close();
+                    
+                    BufferedWriter ba = new BufferedWriter(new FileWriter(archivoEntrada));
+                    for(Map<String, String> usu: lista){
+                        ba.write(usu.get("registro")+"|"+usu.get("posicion")+"|"+usu.get("usuario")+"|"+usu.get("siguiente")+"|"+usu.get("estatus"));
+                        ba.newLine();
+                    }
+                    ba.close();
+                        
+                        
+                        
+                        /*
                         BufferedReader reader = new BufferedReader(new FileReader("C:/MEIA/Bitacora_usuario.txt"));
                         StringBuilder data = new StringBuilder();
                         String line;
@@ -689,20 +829,18 @@ public class NuevoUsuario extends javax.swing.JFrame {
                         writer.close();
                         FileWriter borrar = new FileWriter("C:/MEIA/Bitacora_usuario.txt",false);
                         borrar.close();
+                        */
+                        
+                        
                         //Codigo para descriptor del usuario
-                        BufferedReader leer = new BufferedReader(new FileReader("C:/MEIA/Usuario.txt"));
-                        String ultimaLinea = null;
-                        String linea;
-                        while((linea = leer.readLine()) != null){
-                            ultimaLinea = linea;
-                        }
-                        String[] partes = ultimaLinea.split("\\|");
+               
+                        String filePath2 = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                        File archivo2 = new File(filePath2);
+                        Scanner scanner4 = new Scanner(archivo2);
                         String fecha_creacion = "12/10/2023";
-                        String nombre_simbolico = "Usuario";
                         Date fechaHoraActual = new Date();
                         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                         String fechaHoraFormateada = formato.format(fechaHoraActual);
-                        String usuarioModificacion = partes[0];
                         String usuario_creacion = "";
                         int contadorRegistros = 0;
                         int contActivos = 0;
@@ -725,32 +863,257 @@ public class NuevoUsuario extends javax.swing.JFrame {
                                     contInactivos++;
                                 }
                             }
+                        
                         try{
-                            FileWriter fileWriter = new FileWriter("C:/MEIA/desc_usuario.txt",true);
+                            String nombre_simbolico = "usuario_bloque"+contBloques;
+                            String nombre_simbolicoUsuario = "Usuario";
+                            int max_reorganizacion = 3;
+                        String nombreArchivoDesc = "C:/MEIA/desc_bloque"+contBloques+"_usuario"+".txt";
+                        BufferedWriter creadorExistente = new BufferedWriter(new FileWriter(nombreArchivoDesc, false));
+                        creadorExistente.write(nombre_simbolico+"|"+fechaHoraFormateada+"|"+usuario_creacion+"|"+fechaHoraFormateada+"|"+usuario+"|"+contadorRegistros+"|"+contActivos+"|"+contInactivos+"|"+max_reorganizacion);
+                        creadorExistente.newLine();
+                        creadorExistente.close();
+                        
+                        
+                        FileWriter fileWriter = new FileWriter("C:/MEIA/desc_usuario.txt",true);
                             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                            bufferedWriter.write(nombre_simbolico+"|"+fecha_creacion+"|"+usuario_creacion+"|"+fechaHoraFormateada+"|"+usuarioModificacion+"|"+contadorRegistros
-                            +"|"+contActivos+"|"+contInactivos);
+                            bufferedWriter.write(nombre_simbolicoUsuario+"|"+fecha_creacion+"|"+usuario+"|"+fechaHoraFormateada+"|"+usuario+"|"+contadorRegistros+"|"+contActivos+"|"+contInactivos+"|"+contBloques
+                            +"|"+usuario);
                             bufferedWriter.newLine();
                             bufferedWriter.close();
                             fileWriter.close();
-                        }catch (IOException e){
-                        e.printStackTrace();
-                    }
-                        leer.close();
-                    }
-                    FileWriter fileWriter = new FileWriter("C:/MEIA/Bitacora_usuario.txt",true);
+                            
+                        String nameArch = "C:/MEIA/Proyecto1MEIA/usuarios.txt";
+                    BufferedWriter datos = new BufferedWriter(new FileWriter(nameArch, true));
+                    datos.write(usuario+"|"+nombre+"|"+apellido+"|"+contraseña+"|"+rol+"|"+fecha_nacimiento+"|"+correo_electronico+"|"+telefono+"|"+path_fotografia+"|"+estatus);
+                    datos.newLine();
+                    datos.close();
+
+                        
+                    }catch (IOException e){
+                    e.printStackTrace();
+                }
+                        
+                    }else{
+                    String nameArch = "C:/MEIA/Proyecto1MEIA/usuarios.txt";
+                    BufferedWriter datos = new BufferedWriter(new FileWriter(nameArch, true));
+                    datos.write(usuario+"|"+nombre+"|"+apellido+"|"+contraseña+"|"+rol+"|"+fecha_nacimiento+"|"+correo_electronico+"|"+telefono+"|"+path_fotografia+"|"+estatus);
+                    datos.newLine();
+                    datos.close();
+                    
+                    
+                    //Codigo para llenar el Bloque que todavia no está lleno
+                    
+                    FileWriter fileWriter = new FileWriter("C:/MEIA/usuario_bloque"+contBloques+".txt",true);
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                     bufferedWriter.write(usuario+"|"+nombre+"|"+apellido+"|"+contraseña+"|"+rol+"|"+fecha_nacimiento+"|"+correo_electronico+"|"+telefono+"|"+path_fotografia+"|"+estatus);
                     bufferedWriter.newLine();
                     bufferedWriter.close();
                     fileWriter.close();
+                    
+                    //Codigo para llenar el descriptor del bloque
+                    String filePath6 = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                    File archivo6 = new File(filePath6);
+                    Scanner scanner6 = new Scanner(archivo6);
+                    
+                    Date fechaHoraActual = new Date();
+                    SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    String fechaHoraFormateada = formato.format(fechaHoraActual);
+                    String usuario_creacion = "";
+                    
+                    int contadorRegistros = 0;
+                    int contActivos = 0;
+                    int contInactivos = 0;
+                    
+                    while(scanner6.hasNextLine()) {
+                                contadorRegistros++;
+                                String salto = scanner6.nextLine();
+                                String[] parts = salto.split("\\|");
+                                String usuarioC = parts[0].trim();
+                                int rolGuardado = Integer.parseInt(parts[4].trim());
+                                int estatusGuard = Integer.parseInt(parts[9].trim());
+                                if(rolGuardado == 1){
+                                    usuario_creacion = usuarioC;
+                                }
+                                if(estatusGuard == 1){
+                                    contActivos++;
+
+                                }else{
+                                    contInactivos++;
+                                }
+                            }
+                    
+                    String nombre_simbolico = "usuario_bloque"+contBloques;
+                    int max_reorganizacion = 3;
+                    FileWriter fileWriterDesc = new FileWriter("C:/MEIA/desc_bloque"+contBloques+"_usuario"+".txt",true);
+                    BufferedWriter bufferedWriterDesc = new BufferedWriter(fileWriterDesc);
+                    bufferedWriterDesc.write(nombre_simbolico+"|"+fechaHoraFormateada+"|"+usuario_creacion+"|"+fechaHoraFormateada+"|"+usuario+"|"+contadorRegistros+"|"+contActivos+"|"+contInactivos+"|"+max_reorganizacion);
+                    bufferedWriterDesc.newLine();
+                    bufferedWriterDesc.close();
+                    fileWriterDesc.close();
+                    
+                    //Codigo para llenar el indiceUsuario
+                    String dirUs = "C:/MEIA/Usuario.txt";
+                    File arch = new File(dirUs);
+                    Scanner sc = new Scanner(arch);
+                    String dirBloq = "C:/MEIA/usuario_bloque"+contBloques+".txt";
+                    File archBloq = new File(dirBloq);
+                    Scanner scBloq = new Scanner(archBloq);
+                    int contRegistrosBloq = 0;
+                    while(scBloq.hasNextLine()){
+                        contRegistrosBloq++;
+                        scBloq.nextLine();
+                    }
+                    
+                    int registro = 0, contRegistrosUsuario = 0;
+                    while(sc.hasNextLine()){
+                        contRegistrosUsuario++;
+                        registro = contRegistrosUsuario + 1;
+                        sc.nextLine();
+                    }
+                    
+                    String posicion = contBloques+"."+contRegistrosBloq;
+                    
+                    String archivoEntrada = "C:/MEIA/Usuario.txt";
+                    FileWriter escritorIndice = new FileWriter(archivoEntrada,true);
+                    BufferedWriter escInd = new BufferedWriter(escritorIndice);
+                    
+                    escInd.write(registro+"|"+posicion+"|"+usuario+"|"+0+"|"+estatus);
+                    escInd.newLine();
+                    escInd.close();
+                    escritorIndice.close();
+                    List<String> usuariosList = new ArrayList<>();
+                    BufferedReader br = new BufferedReader(new FileReader(archivoEntrada));
+                    String linea;
+                    while ((linea = br.readLine()) != null) {
+                        String[] partes = linea.split("\\|");
+                        String nombreUsuario = partes[2];
+                        usuariosList.add(nombreUsuario);
+                    }
+                    br.close();
+                    
+                    Collections.sort(usuariosList);
+                    
+                    String archivoGuardar = "C:/MEIA/guardar.txt";
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(archivoGuardar,true));
+                    for(int i = 0; i < usuariosList.size(); i++){
+                        String usuarioActual = usuariosList.get(i);
+                        String siguienteUsuario = (i < usuariosList.size() - 1) ? usuariosList.get(i+1) : "nada";
+                        bw.write(usuarioActual + "|" + siguienteUsuario +"\n");
+                    }
+                    bw.close();
+                    //usuariosList.get(usuariosList.size() - 1).put("siguiente", "0");
+                    
+                    //Agregar los datos de guardado.txt en el archivo principal Usuarios.txt
+                    List<Map<String, String>> lista = new ArrayList<>();
+                    BufferedReader brPrincipal = new BufferedReader(new FileReader(archivoEntrada));
+                    String lineaPrincipal;
+                    while((lineaPrincipal = brPrincipal.readLine()) != null){
+                        String[] partesPrincipal = lineaPrincipal.split("\\|");
+                        Map<String, String> usu = new HashMap<>();
+                        usu.put("registro", partesPrincipal[0]);
+                        usu.put("posicion", partesPrincipal[1]);
+                        usu.put("usuario", partesPrincipal[2]);
+                        usu.put("siguiente", partesPrincipal[3]);
+                        usu.put("estatus", partesPrincipal[4]);
+                        lista.add(usu);
+                    }
+                    brPrincipal.close();
+                    BufferedReader brDocumento = new BufferedReader(new FileReader(archivoGuardar));
+                    String lineaDocumento;
+                    while((lineaDocumento = brDocumento.readLine())!= null){
+                        String[] partesDocumento = lineaDocumento.split("\\|");
+                        String usuarioActualizar = partesDocumento[0];
+                        String siguienteNuevo = partesDocumento[1];
+                        
+                        for(Map<String, String> usu : lista){
+                            if(usu.get("usuario").equals(usuarioActualizar)){
+                                usu.put("siguiente", siguienteNuevo);
+                                break;
+                            }
+                            
+                        }
+                    }
+                    brDocumento.close();
+                    
+                    BufferedWriter ba = new BufferedWriter(new FileWriter(archivoEntrada));
+                    for(Map<String, String> usu: lista){
+                        ba.write(usu.get("registro")+"|"+usu.get("posicion")+"|"+usu.get("usuario")+"|"+usu.get("siguiente")+"|"+usu.get("estatus"));
+                        ba.newLine();
+                    }
+                    ba.close();
+                    //Codigo para descriptor de usuario
+                    BufferedReader brFinal = new BufferedReader(new FileReader(archivoEntrada));
+                    String lineaFinal;
+            String primerUsuarioAlfabetico = null;
+            
+            while ((lineaFinal = brFinal.readLine()) != null) {
+                // Dividir la línea en campos (ajusta esto según tu formato)
+                String[] campos = lineaFinal.split("\\|");
+                
+                // Obtener el nombre del usuario (ajusta esto según tu formato)
+                String nombreUsuario = campos[2];
+                
+                // Verificar si es el primer usuario o si es menor en orden alfabético
+                if (primerUsuarioAlfabetico == null || nombreUsuario.compareTo(primerUsuarioAlfabetico) < 0) {
+                    primerUsuarioAlfabetico = nombreUsuario;
+                }
+            }
+            
+            // Cerrar el archivo
+            brFinal.close();
+                    
+                    
+                    String filePaths = "C:/MEIA/desc_usuario.txt";
+                    File archivo6s = new File(filePaths);
+                    Scanner scanner6s = new Scanner(archivo6s); 
+                    String nombre_simbolicoUsuario = "Usuario";
+                    String fecha_creacion = "7/11/2023";
+                    Date fechaHoraActuall = new Date();
+                    SimpleDateFormat formatol = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    String fechaHoraFormateadal = formato.format(fechaHoraActuall);
+                    String usuario_mod = primerUsuarioAlfabetico;
+                    int contadorRegistross = 0;
+                    int contActivoss = 0;
+                    int contInactivoss = 0;
+                    while(scanner6s.hasNextLine()) {
+                                contadorRegistros++;
+                                String salto = scanner6s.nextLine();
+                                String[] parts = salto.split("\\|");
+                                String usuarioC = parts[0].trim();
+                                int rolGuardado = Integer.parseInt(parts[5].trim());
+                                int estatusGuard = Integer.parseInt(parts[6].trim());
+                                if(rolGuardado == 1){
+                                    usuario_creacion = usuarioC;
+                                }
+                                if(estatusGuard == 1){
+                                    contActivos++;
+
+                                }else{
+                                    contInactivos++;
+                                }
+                            }
+                    
+                    
+                    
+                    FileWriter fileDesc = new FileWriter("C:/MEIA/desc_usuario.txt",true);
+                            BufferedWriter buffDesc = new BufferedWriter(fileDesc);
+                            buffDesc.write(nombre_simbolicoUsuario+"|"+fecha_creacion+"|"+usuario_creacion+"|"+fechaHoraFormateadal+"|"+usuario+"|"+contadorRegistross+"|"+contActivoss+"|"+contInactivoss+"|"+contBloques
+                            +"|"+usuario_mod);
+                            buffDesc.newLine();
+                            buffDesc.close();
+                            fileDesc.close();
+                    
+                    
+                    }
+                    
                 }else{
                     JOptionPane.showMessageDialog(null, "Error, verifique sus datos");
                 }
             }catch (IOException e){
                 e.printStackTrace();
             }
-            //Descriptor para bitacora usuario
+            //Descriptor para  usuario
         String nombre_simbolico = "Bitacora_usuario";
         String fecha_creacion = "12/10/2023";
         String usuario_creacion = "";
@@ -761,7 +1124,7 @@ public class NuevoUsuario extends javax.swing.JFrame {
         int contadorRegistros = 0;
         int contActivos = 0;
         int contInactivos = 0;
-        
+        /*
         while(scanner3.hasNextLine()) {
                 contadorRegistros++;
                 String line = scanner3.nextLine();
@@ -779,6 +1142,7 @@ public class NuevoUsuario extends javax.swing.JFrame {
                     contInactivos++;
                 }
             }
+        
         try{
                     FileWriter fileWriter = new FileWriter("C:/MEIA/Desc_bit_usuario.txt",true);
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -789,6 +1153,7 @@ public class NuevoUsuario extends javax.swing.JFrame {
                 }catch (IOException e){
                 e.printStackTrace();
             }
+        */
         }
             
         }catch(IOException e){

@@ -1,4 +1,0 @@
-alejandro|Diego|Cosillo|Admin123|0|18/02/2005|diego@gmail.com|54663919|C:\Users\Diego\Pictures\alexmarin.jpg|1
-david|Diego|Marin|Admin123|0|18/02/2005|diego@gmail.com|1111111|C:\Users\Diego\Pictures\alexmarin.jpg|0
-diegojc|Diego|Cosillo|Admin123|1|18/02/2005|diego@gmail.com|54663919|C:\Users\Diego\Pictures\alexmarin.jpg|1
-jose|Diego|Cosillo|Admin123|0|18/02/2005|diego@gmail.com|54663919|C:\Users\Diego\Pictures\alexmarin.jpg|1
